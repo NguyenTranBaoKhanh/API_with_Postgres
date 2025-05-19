@@ -8,6 +8,7 @@ namespace API_with_Postgres.Business.Interfaces
         Task<CommonResponse<IEnumerable<User>>> GetAll();
         Task<CommonResponse<User>> CreateUser(User user);
         Task<CommonResponse<IEnumerable<User>>> GetUsersByEmail(string email);
+        Task<CommonResponse<IEnumerable<User>>> GetUsersById(int id);
 
     }
 }

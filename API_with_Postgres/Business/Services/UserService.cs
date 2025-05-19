@@ -25,5 +25,10 @@ namespace API_with_Postgres.Business.Services
         {
             return await _userRepository.GetUsersByEmail(email);
         }
-    }
+
+        public async Task<CommonResponse<IEnumerable<User>>> GetUsersById(int id)
+        {
+            return await _userRepository.GetUsersById(id);
+        }
+  }
 }

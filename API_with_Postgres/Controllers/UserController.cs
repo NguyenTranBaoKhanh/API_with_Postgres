@@ -48,5 +48,16 @@ namespace API_with_Postgres.Controllers
             }
             return Ok(response);
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUsersByEmail(int id)
+        {
+            var response = await _userService.GetUsersById(id);
+            if (response == null || !response.Payload.Any())
+            {
+                return NotFound(response);
+            }
+            return Ok(response);
+        }
     }
 }

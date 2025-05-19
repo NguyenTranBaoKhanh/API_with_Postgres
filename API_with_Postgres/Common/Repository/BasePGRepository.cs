@@ -4,7 +4,7 @@ using Npgsql;
 using System.Data;
 using System.Dynamic;
 
-namespace Common.Library.Collection.Dapper
+namespace API_with_Postgres.Common.Repository
 {
     public abstract class BasePGRepository : LoggingService
     {

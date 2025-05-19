@@ -11,6 +11,7 @@ namespace API_with_Postgres.Repositories
         Task<CommonResponse<IEnumerable<User>>> GetAll();
         Task<CommonResponse<User>> CreateUser(User user);
         Task<CommonResponse<IEnumerable<User>>> GetUsersByEmail(string email);
+        Task<CommonResponse<IEnumerable<User>>> GetUsersById(int id);
     }
 
     public class UserRepository : BaseRepository_Old, IUserRepository
@@ -25,6 +26,15 @@ namespace API_with_Postgres.Repositories
         public async Task<CommonResponse<IEnumerable<User>>> GetAll()
         {
             var query = @"SELECT * FROM ""Users""";
+            var createTableQuery = @"
+                CREATE TABLE IF NOT EXISTS ""Users"" (
+                    ""Id"" SERIAL PRIMARY KEY,
+                    ""Name"" TEXT NOT NULL,
+                    ""Email"" TEXT NOT NULL
+                );
+            ";
+
+            await _context.CreateConnection().ExecuteAsync(createTableQuery);
             using (var connection = _context.CreateConnection())
             {
                 var users = await QueryExecuteAsync<User>(connection, query);
@@ -57,6 +67,20 @@ namespace API_with_Postgres.Repositories
             using (var connection = _context.CreateConnection())
             {
                 var users = await QueryExecuteAsync<User>(connection, query, new { Email = email });
+                return new CommonResponse<IEnumerable<User>>
+                {
+                    Success = true,
+                    Payload = users
+                };
+            }
+        }
+
+        public async Task<CommonResponse<IEnumerable<User>>> GetUsersById(int id)
+        {
+            var query = @"SELECT * FROM ""Users"" WHERE ""Id"" = @Id";
+            using (var connection = _context.CreateConnection())
+            {
+                var users = await QueryExecuteAsync<User>(connection, query, new { Id =  id });
                 return new CommonResponse<IEnumerable<User>>
                 {
                     Success = true,
