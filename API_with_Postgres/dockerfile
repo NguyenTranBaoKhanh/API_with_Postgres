@@ -1,0 +1,19 @@
+# Sử dụng image .NET 9 SDK để build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+
+# Copy csproj và restore các package
+COPY ["API_with_Postgres.csproj", "./"]
+RUN dotnet restore "./API_with_Postgres.csproj"
+
+# Copy toàn bộ source code và build
+COPY . .
+RUN dotnet publish "API_with_Postgres.csproj" -c Release -o /app/publish
+
+# Sử dụng image .NET 9 runtime để chạy app
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+EXPOSE 80
+EXPOSE 443
+ENTRYPOINT ["dotnet", "API_with_Postgres.dll"]

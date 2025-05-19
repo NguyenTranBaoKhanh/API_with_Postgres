@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 11111
+      POSTGRES_DB: MyDatabase
+    ports:
+      - "15432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: .
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=MyDatabase;Username=postgres;Password=11111
+    ports:
+      - "5029:80"
+      - "7148:443"
+
+    # Nếu app dùng HTTPS, mở thêm port 443
+    # ports:
+    #   - "7148:443"
+
+volumes:
+  pgdata:
